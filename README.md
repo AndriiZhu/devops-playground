@@ -93,20 +93,59 @@ Keep track of the project's health and performance through these live dashboards
 
 ## 📦 Local Development
 
-### Prerequisites
+### Option A: Docker Compose (Recommended)
 
+#### Prerequisites
 * Docker & Docker Compose
 
-### Fast Start
-
+#### Start Services
 ```bash
-git clone https://github.com/Zhuravka-AI/devops-playground.git
-cd devops-playground
 docker-compose up --build
 ```
+* **Frontend:** [http://localhost](http://localhost) (or [http://localhost:80](http://localhost:80))
+* **Backend (API):** [http://localhost/api](http://localhost/api) (with Swagger docs at [http://localhost/api/docs](http://localhost/api/docs))
 
-* **Frontend:** [http://localhost:80](http://localhost:80)
-* **Backend:** [http://localhost:8000](http://localhost:8000)
+---
+
+### Option B: Native Host Machine (No Docker)
+
+You can run both services natively on your host machine for faster iteration. The Vite development server is configured with a proxy to automatically route API requests to your local backend.
+
+#### 1. Run the FastAPI Backend
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Load environment variables from `.env` and start the server:
+   ```bash
+   export $(grep -v '^#' .env | xargs)
+   uvicorn app.main:app --host 127.0.0.1 --port 8000
+   ```
+   *Backend API is served at http://localhost:8000.*
+
+#### 2. Run the React Frontend (Vite)
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install npm dependencies:
+   ```bash
+   npm install
+   ```
+3. Start Vite dev server:
+   ```bash
+   npm run dev
+   ```
+   *Frontend is served at http://localhost:5173. The dev proxy routes `/api/...` calls to port 8000.*
 
 ---
 

@@ -31,59 +31,74 @@ const SentryTest = () => {
   };
 
   return (
-    <div style={{ padding: '20px', border: '1px solid #ccc', margin: '10px' }}>
-      <h3>Sentry Debug Panel</h3>
+    <section className="glass-card">
+      <h2 className="card-title">
+        <span className="card-title-icon">🛡️</span> Sentry Debug Console
+      </h2>
 
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+      <div className="sentry-layout">
+        {/* Action 1: Break Frontend */}
+        <div className="sentry-action-card">
           <button
             onClick={handleFrontendError}
-            style={{ padding: '8px 16px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            className="btn btn-danger"
+            aria-describedby="break-frontend-desc"
           >
             Break Frontend
           </button>
-          {frontendResult && (
-            <div
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: frontendResult.type === 'reported' ? '#fff3e0' : '#e8f5e9',
-                color: '#333',
-                fontSize: '14px',
-              }}
-              role="status"
-            >
-              {frontendResult.message}
-            </div>
-          )}
+          
+          <div className="element-desc danger-desc" id="break-frontend-desc">
+            <span className="desc-bullet">⚠️</span>
+            <span>
+              <strong>Break Frontend:</strong> Simulates a client-side JavaScript error and manually sends it to Sentry for monitoring verification.
+            </span>
+          </div>
+
+          <div className="sentry-status-area">
+            {frontendResult && (
+              <div className={`status-box ${frontendResult.type}`} role="status">
+                <span>🔔</span>
+                <span>{frontendResult.message}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+        {/* Action 2: Break Backend */}
+        <div className="sentry-action-card">
           <button
             onClick={handleBackendError}
-            style={{ padding: '8px 16px', backgroundColor: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            className="btn btn-warning"
+            aria-describedby="break-backend-desc"
           >
             Break Backend
           </button>
-          {backendResult && (
-            <div
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: backendResult.type === 'success' ? '#e8f5e9' : '#ffebee',
-                color: '#333',
-                fontSize: '14px',
-              }}
-              role="status"
-            >
-              {backendResult.status != null && <strong>[{backendResult.status}] </strong>}
-              {backendResult.message}
-            </div>
-          )}
+          
+          <div className="element-desc warning-desc" id="break-backend-desc">
+            <span className="desc-bullet">⚡</span>
+            <span>
+              <strong>Break Backend:</strong> Triggers a backend error endpoint to test and verify server-side Sentry error logging.
+            </span>
+          </div>
+
+          <div className="sentry-status-area">
+            {backendResult && (
+              <div className={`status-box ${backendResult.type}`} role="status">
+                <span>
+                  {backendResult.type === 'success' ? '✅' : '❌'}
+                </span>
+                <span>
+                  {backendResult.status != null && <strong>[{backendResult.status}] </strong>}
+                  {backendResult.message}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
 export default SentryTest;
+
