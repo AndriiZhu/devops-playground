@@ -53,6 +53,11 @@ describe('App Component', () => {
     fireEvent.change(textarea, { target: { value: 'test' } })
     fireEvent.click(screen.getByRole('button', { name: /analyze/i }))
     expect(screen.getByText('Analyzing...')).toBeInTheDocument()
+
+    // Wait for the async API request to complete to avoid React "act" warning
+    await waitFor(() => {
+      expect(screen.queryByText('Analyzing...')).not.toBeInTheDocument()
+    })
   })
 
   it('displays analysis results on successful API call', async () => {
@@ -88,6 +93,7 @@ describe('App Component', () => {
   it('handles API errors gracefully', async () => {
     globalThis.fetch.mockRejectedValueOnce(new Error('Network error'))
     const alertSpy = vi.spyOn(globalThis, 'alert').mockImplementation(() => {})
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     render(<App />)
     fireEvent.change(screen.getByPlaceholderText('Enter your text for analysis...'), {
       target: { value: 'test' }
@@ -96,6 +102,7 @@ describe('App Component', () => {
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('API is not responding')
     })
+    consoleErrorSpy.mockRestore()
   })
 
   it('sends correct payload to API', async () => {
